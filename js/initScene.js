@@ -220,7 +220,7 @@ var createRaceTrack = function () {
         });
 }
 
-var placeRaceTrack = function(length) {
+var placeRaceTrack = function (length) {
         let startLinePos = -107
 
         let x = 0
@@ -242,7 +242,7 @@ var placeRaceTrack = function(length) {
         });
 }
 
-var addUI = function() {
+var addUI = function () {
         let input = document.getElementById("input");
 
         if (!input) {
@@ -257,29 +257,49 @@ var addUI = function() {
         }
 
         // Files input
-        var filesInput = new BABYLON.FilesInput(engine, null, null, null, null, null, function () { BABYLON.Tools.ClearLogCache() }, function () {}, null);
+        var filesInput = new BABYLON.FilesInput(engine, null, null, null, null, null, function () { BABYLON.Tools.ClearLogCache() }, function () { }, null);
         filesInput.onProcessFileCallback = (function (file, name, extension) {
-        if (filesInput._filesToLoad && filesInput._filesToLoad.length === 1 && extension) {
-                BABYLON.Tools.ReadFile(file, function(dataText) {
-                    var data = JSON.parse(dataText);
-                    setupSimulation(data);
-                });
-        }
-        return false;
-    }).bind(this);
+                if (filesInput._filesToLoad && filesInput._filesToLoad.length === 1 && extension) {
+                        BABYLON.Tools.ReadFile(file, function (dataText) {
+                                let simBtn = document.getElementById("simBtn")
+                                simBtn.disabled = false
+                                var data = JSON.parse(dataText);
+                                setupSimulation(data);
+                        });
+                }
+                return false;
+        }).bind(this);
 
-    input.addEventListener('change', function (event) {
-        var filestoLoad;
-        // Handling files from input files
-        if (event && event.target && event.target.files) {
-            filesToLoad = event.target.files;
-        }
-        filesInput.loadFiles(event);
-    }, false);     
+        input.addEventListener('change', function (event) {
+                isSimulationRunning = false
+                let simBtn = document.getElementById("simBtn")
+                simBtn.disabled = true
+                var filestoLoad;
+                // Handling files from input files
+                if (event && event.target && event.target.files) {
+                        filesToLoad = event.target.files;
+                }
+                filesInput.loadFiles(event);
+        }, false);
 
+        let simBtn = document.getElementById("simBtn")
+        if (!simBtn) {
+                simBtn = document.createElement("button");
+                simBtn.id = "simBtn"
+                simBtn.type = "button";
+                simBtn.textContent = "Simulate!"
+                simBtn.style.zIndex = "2"
+                simBtn.disabled = true
+                document.body.appendChild(simBtn);
+                simBtn.style.right = `${20 + input.getBoundingClientRect().width - simBtn.getBoundingClientRect().width}px`
+        }
+
+        simBtn.addEventListener("click", function() {
+                isSimulationRunning = true
+              });
 }
 
-var setupSimulation = function(data) {
+var setupSimulation = function (data) {
         // Simulation
         let simulation = data.simulation
         if (simulation == null) {
@@ -300,12 +320,12 @@ var setupSimulation = function(data) {
                 return;
         }
 
-        if(trackLength <= 0 || isNaN(trackLength)) {
+        if (trackLength <= 0 || isNaN(trackLength)) {
                 console.log("Invalid track length! >:(")
                 return;
         }
 
-        if(trackLength > 200){
+        if (trackLength > 200) {
                 console.log("Track length max value is 200 >:(")
                 return;
         }
@@ -314,26 +334,26 @@ var setupSimulation = function(data) {
 
         // Build vehicules
         let vehiculesData = simulation.vehicules
-        if(vehiculesData == null || vehiculesData.length === 0){
+        if (vehiculesData == null || vehiculesData.length === 0) {
                 console.log("No vehicules to simulate :(")
                 return;
         }
 
-        for (const vehicule of vehiculesData){
+        for (const vehicule of vehiculesData) {
                 let name = vehicule.name
-                if (name == null){
+                if (name == null) {
                         console.log("Vehicule has no name :(")
                         continue;
                 }
 
                 let components = vehicule.components
-                if (components == null || components.length === 0){
+                if (components == null || components.length === 0) {
                         console.log(`Vehicule ${name} has no components :(`)
                         continue;
                 }
 
                 let movements = vehicule.movements
-                if (movements == null || movements.length === 0){
+                if (movements == null || movements.length === 0) {
                         console.log(`No movements found for vehicule ${name} :(`)
                         continue;
                 }
@@ -343,13 +363,18 @@ var setupSimulation = function(data) {
 
 }
 
-var runSimulation = function() {
-        if(isSimulationRunning) {
+var runSimulation = function () {
+        if (isSimulationRunning) {
                 success = false
                 vehicules.forEach(v => {
-                       success = success || v.toNextState()
+                        success = success || v.toNextState()
                 })
                 isSimulationRunning = success
+
+                if(!isSimulationRunning) {
+                        let simBtn = document.getElementById("simBtn")
+                        simBtn.disabled = true
+                }
         }
 
         setTimeout(runSimulation, updateTime);
