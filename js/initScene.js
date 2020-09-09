@@ -274,6 +274,7 @@ var addUI = function () {
                 isSimulationRunning = false
                 let simBtn = document.getElementById("simBtn")
                 simBtn.disabled = true
+                cleanSimulation()
                 var filestoLoad;
                 // Handling files from input files
                 if (event && event.target && event.target.files) {
@@ -361,6 +362,14 @@ var setupSimulation = function (data) {
                 vehicules.push(new Vehicule(name, components, movements, scene, shadowGenerator, -107))
         }
 
+}
+
+var cleanSimulation = function() {
+        for(let i = 0; i < vehicules.length; i++){
+                vehicules[i].vehicule.dispose()
+                vehicules[i].vehicule = null
+        }
+        vehicules = []
 }
 
 var runSimulation = function () {
