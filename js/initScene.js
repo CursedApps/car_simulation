@@ -67,14 +67,14 @@ var setupScene = function () {
 
         // Add lights to the scene
         var hemi = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
-        hemi.intensity = 0.5;
+        hemi.intensity = 0.6;
         hemi.diffuse = new BABYLON.Color3(1, 0.78, 0.51);
         hemi.specular = new BABYLON.Color3(1, 0.89, 0.65);
         hemi.groundColor = new BABYLON.Color3(0.94, 0.6, 0.43);
 
         var dir = new BABYLON.DirectionalLight("dir", new BABYLON.Vector3(-1, -1, 1), scene);
         dir.position = new BABYLON.Vector3(500, 250, -500);
-        dir.intensity = 0.5
+        dir.intensity = 0.6
 
         shadowGenerator = new BABYLON.ShadowGenerator(4096, dir);
         shadowGenerator.normalBias = 0.02;
@@ -117,29 +117,7 @@ var createTerrain = function () {
                 ground.collisionsEnabled = true
                 ground.checkCollisions = true
 
-                var mix = new BABYLON.MixMaterial("mix", scene);
-
-                //Set the mix texture (represents the RGB values)
-                mix.mixTexture1 = new BABYLON.Texture("assets/textures/mixmap.png", scene);
-                mix.mixTexture2 = new BABYLON.Texture("assets/textures/mixmap_road.png", scene);
-
-                mix.diffuseTexture1 = new BABYLON.Texture("assets/textures/snow.png", scene);
-                mix.diffuseTexture1.roughness = 1.0
-                mix.diffuseTexture2 = new BABYLON.Texture("assets/textures/dark_grass.png", scene);
-                mix.diffuseTexture2.roughness = 1.0
-                mix.diffuseTexture3 = new BABYLON.Texture("assets/textures/grass.png", scene);
-                mix.diffuseTexture3.roughness = 1.0
-                mix.diffuseTexture4 = new BABYLON.Texture("assets/textures/grass.png", scene);
-                mix.diffuseTexture4.roughness = 1.0
-
-                mix.diffuseTexture5 = new BABYLON.Texture("assets/textures/asphalt.png", scene);
-                mix.diffuseTexture6 = new BABYLON.Texture("assets/textures/paint.png", scene);
-                mix.diffuseTexture7 = new BABYLON.Texture("assets/textures/grass.png", scene);
-                mix.diffuseTexture8 = new BABYLON.Texture("assets/textures/grass.png", scene);
-
-                ground.material = mix;
-
-                let pg = new PineGenerator(scene, shadowGenerator, ground, -512, 512, 0, 300);
+                let pg = new PineGenerator(scene, shadowGenerator, ground, -512, 512, 0, 500);
         });
 
         BABYLON.SceneLoader.ImportMesh("", "assets/scenes/tunnel/", "tunnel.obj", scene, function (newMeshes) {
@@ -221,7 +199,7 @@ var createRaceTrack = function () {
 }
 
 var placeRaceTrack = function (length) {
-        let startLinePos = -107
+        let startLinePos = -95
 
         let x = 0
         let z = startLinePos + length
@@ -359,7 +337,7 @@ var setupSimulation = function (data) {
                         continue;
                 }
 
-                vehicules.push(new Vehicule(name, components, movements, scene, shadowGenerator, -107))
+                vehicules.push(new Vehicule(name, components, movements, scene, shadowGenerator, -95))
         }
 
 }

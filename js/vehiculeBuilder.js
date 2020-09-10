@@ -25,16 +25,18 @@ Vehicule.prototype.loadFrame = function() {
             mesh.material.backFaceCulling = false;
         });
 
-        frame = BABYLON.Mesh.MergeMeshes(newMeshes, true, false, false, false, true)
+        frame = BABYLON.Mesh.MergeMeshes(newMeshes, true, true, false, false, true)
         _this.loadWheels(_this, frame)
     });
 }
 
 Vehicule.prototype.loadWheels = function(_this, frame) {
-
+    console.log("LOADING WHEELS")
     let size = frame.getBoundingInfo().boundingBox.extendSize;
+    console.log(size)
     const wheels = _this.components.filter(s => s.includes('_wheel'));
-    let points = getPointsAroundCar(wheels.length, size.x, size.z)
+    let frameName = _this.components.filter(s => s.includes('_frame'))[0];
+    let points = getPointsAroundCar(wheels.length, size.x, size.z, axesMap[frameName])
     let height = 0
     let loadedWheels = 0
     let toMerge = [frame]
@@ -48,7 +50,7 @@ Vehicule.prototype.loadWheels = function(_this, frame) {
                     mesh.position = points[i]
                 });
 
-            let wheel = BABYLON.Mesh.MergeMeshes(newMeshes, true, false, false, false, true)
+            let wheel = BABYLON.Mesh.MergeMeshes(newMeshes, true, true, false, false, true)
             let wheelSize = wheel.getBoundingInfo().boundingBox.extendSize
             toMerge.push(wheel)
             height = Math.max(height, wheelSize._y)
@@ -56,7 +58,7 @@ Vehicule.prototype.loadWheels = function(_this, frame) {
             loadedWheels += 1
             
             if (loadedWheels === wheels.length) {
-                completeVehicule = BABYLON.Mesh.MergeMeshes(toMerge, true, false, false, false, true)
+                completeVehicule = BABYLON.Mesh.MergeMeshes(toMerge, true, true, false, false, true)
                 let size = completeVehicule.getBoundingInfo().boundingBox.extendSize
                 completeVehicule.position.z = _this.startZ - size.z
                 completeVehicule.position.y = height
@@ -83,8 +85,8 @@ Vehicule.prototype.toNextState = function() {
     nextPosition = nextState.position
     nextRotation = nextState.rotation
 
-    let x = nextPosition[0] + this.startPos.x
-    let y = nextPosition[1] + this.startPos.y
+    let x = nextPosition[0]
+    let y = nextPosition[1] + this.vehicule.position.y
     let z = nextPosition[2] + this.startPos.z
 
     this.vehicule.position = new BABYLON.Vector3(x, y, z)

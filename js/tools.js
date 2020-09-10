@@ -9,7 +9,7 @@ randomNumber = function (min, max) {
 
 getHeightAtPoint = function(x, z, show = false) {
 
-    var origin = new BABYLON.Vector3(x, 0, z)
+    var origin = new BABYLON.Vector3(x, -1, z)
     var forward = new BABYLON.Vector3(0, 1, 0)
 
     var length = 1000
@@ -23,7 +23,7 @@ getHeightAtPoint = function(x, z, show = false) {
 
     var hit = scene.pickWithRay(ray)
 
-    return hit.distance
+    return hit.distance - 1
 }
 
 getPointsAroundCircle = function(n, radius) {
@@ -42,33 +42,44 @@ getPointsAroundCircle = function(n, radius) {
     return points
 }
 
-getPointsAroundCar = function(n, width, length) {
+getPointsAroundCar = function(n, width, length, nAxes) {
     let points = []
-
+    console.log(width)
     if( n === 1)
         return [new BABYLON.Vector3(0, 0, 0)]
 
-    let xLeft = -width
-    let xRight = width
+    let axes = []
+    if (nAxes === 1) {
+        axes.push(0)
+    } else {
+        axes.push(-width)
+        axes.push(width)
+    }
+    console.log(axes)
+    nSideWheels = Math.floor(n / nAxes)
 
-    nSideWheels = Math.floor(n / 2)
+    // to propery align with the motorcycle wheel holders
+    let hackyConst = 2
+    if (nAxes === 1){
+        hackyConst = 3
+    }
 
-    lengthSegment = 2 * length / nSideWheels
+    lengthSegment = hackyConst * length / nSideWheels
     halfSegment = lengthSegment / 2
 
     let y = 0
     for (let k = 0; k < Math.floor(nSideWheels) / 2; k++) {
         let z = k * lengthSegment + lengthSegment / 2
-        points.push(new BABYLON.Vector3(xLeft , y,  z))
-        points.push(new BABYLON.Vector3(xLeft , y, -z))
-        points.push(new BABYLON.Vector3(xRight, y,  z))
-        points.push(new BABYLON.Vector3(xRight, y, -z))
+        for(let i=0; i < axes.length; i++) {
+            points.push(new BABYLON.Vector3(axes[i] , y,  z))
+            points.push(new BABYLON.Vector3(axes[i] , y, -z))
+        }
     }
 
     if (n % 2 === 1) {
-        points.push(new BABYLON.Vector3(xLeft, y, 0))
+        points.push(new BABYLON.Vector3(axes[0], y, 0))
     }
-
+    console.log(points)
     return points
 
 }

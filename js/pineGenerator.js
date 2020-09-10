@@ -37,8 +37,6 @@ PineGenerator.prototype.generate = function () {
                 mesh.receiveShadows = true;
                 mesh.position = new BABYLON.Vector3(x, y, z);
             });
-
-
         })
     }
 };

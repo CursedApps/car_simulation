@@ -11,3 +11,9 @@ let componentsMap = {
     "car_engine"  : null,
     "truck_engine": null
 }
+
+let axesMap = {
+    "moto_frame" : 1,
+    "car_frame"  : 2,
+    "truck_frame": 2
+}
