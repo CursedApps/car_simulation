@@ -44,7 +44,7 @@ getPointsAroundCircle = function(n, radius) {
 
 getPointsAroundCar = function(n, width, length, nAxes) {
     let points = []
-    console.log(width)
+
     if( n === 1)
         return [new BABYLON.Vector3(0, 0, 0)]
 
@@ -55,31 +55,39 @@ getPointsAroundCar = function(n, width, length, nAxes) {
         axes.push(-width)
         axes.push(width)
     }
-    console.log(axes)
+
     nSideWheels = Math.floor(n / nAxes)
+    sideWheels = []
+
+    for(let j = 0; j < nAxes; j++){
+        if(j < n % nAxes) {
+            sideWheels.push(nSideWheels + 1)
+        } else {
+            sideWheels.push(nSideWheels)
+        }
+
+    }
 
     // to propery align with the motorcycle wheel holders
     let hackyConst = 2
     if (nAxes === 1){
-        hackyConst = 3
+        hackyConst = 2.4
     }
-
-    lengthSegment = hackyConst * length / nSideWheels
-    halfSegment = lengthSegment / 2
 
     let y = 0
-    for (let k = 0; k < Math.floor(nSideWheels) / 2; k++) {
-        let z = k * lengthSegment + lengthSegment / 2
-        for(let i=0; i < axes.length; i++) {
-            points.push(new BABYLON.Vector3(axes[i] , y,  z))
-            points.push(new BABYLON.Vector3(axes[i] , y, -z))
+    for(let i = 0; i < axes.length; i++) {
+        for (let k = 0; k < sideWheels[i]; k++) {
+            let lengthSegment = hackyConst * length / sideWheels[i]
+            let z = -length + k * lengthSegment + lengthSegment / 2
+            points.push(new BABYLON.Vector3(axes[i] , y, z))
         }
     }
+    
 
     if (n % 2 === 1) {
         points.push(new BABYLON.Vector3(axes[0], y, 0))
     }
-    console.log(points)
+
     return points
 
 }

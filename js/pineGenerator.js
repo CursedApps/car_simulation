@@ -25,8 +25,8 @@ PineGenerator.prototype.generate = function () {
             let x, y, z = 0
             do {
                 x = randomNumber(minXZ, maxXZ);
-                if (x < 30 && x > 0) x += 30
-                else if (x < 0 && x > -30) x -= 30
+                if (x < 50 && x > 0) x += 50
+                else if (x < 0 && x > -50) x -= 50
                 
                 z = randomNumber(minXZ, maxXZ);
                 y = getHeightAtPoint(x, z);

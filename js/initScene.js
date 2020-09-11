@@ -38,11 +38,28 @@ window.onload = function () {
 
         setupScene(); //Call the createScene function
         assetsManager = new BABYLON.AssetsManager(scene);
-
+        //setTimeout(runSimulation, updateTime)
 
         // Register a render loop to repeatedly render the scene
         engine.runRenderLoop(function () {
                 scene.render();
+        });
+
+        scene.registerBeforeRender(function () {
+                if(isSimulationRunning) {
+                        success = false
+                        for (let i = 0; i < vehicules.length; i++) {
+                                outcome = vehicules[i].toNextState();
+                                success |= outcome
+                        }
+
+                        isSimulationRunning = success
+
+                        if (!isSimulationRunning) {
+                                let simBtn = document.getElementById("simBtn")
+                                simBtn.disabled = true
+                        }
+                }
         });
 
         // Watch for browser/canvas resize events
@@ -85,9 +102,6 @@ var setupScene = function () {
         createTerrain()
         createRaceTrack()
         createSkyBox()
-
-        setTimeout(runSimulation, updateTime);
-
 }
 
 var setupCamera = function () {
@@ -273,9 +287,9 @@ var addUI = function () {
                 simBtn.style.right = `${20 + input.getBoundingClientRect().width - simBtn.getBoundingClientRect().width}px`
         }
 
-        simBtn.addEventListener("click", function() {
+        simBtn.addEventListener("click", function () {
                 isSimulationRunning = true
-              });
+        });
 }
 
 var setupSimulation = function (data) {
@@ -342,8 +356,8 @@ var setupSimulation = function (data) {
 
 }
 
-var cleanSimulation = function() {
-        for(let i = 0; i < vehicules.length; i++){
+var cleanSimulation = function () {
+        for (let i = 0; i < vehicules.length; i++) {
                 vehicules[i].vehicule.dispose()
                 vehicules[i].vehicule = null
         }
@@ -351,18 +365,7 @@ var cleanSimulation = function() {
 }
 
 var runSimulation = function () {
-        if (isSimulationRunning) {
-                success = false
-                vehicules.forEach(v => {
-                        success = success || v.toNextState()
-                })
-                isSimulationRunning = success
 
-                if(!isSimulationRunning) {
-                        let simBtn = document.getElementById("simBtn")
-                        simBtn.disabled = true
-                }
-        }
 
-        setTimeout(runSimulation, updateTime);
+        //setTimeout(runSimulation, updateTime)
 }
