@@ -31,6 +31,7 @@ Vehicule.prototype.loadFrame = function() {
 }
 
 Vehicule.prototype.loadWheels = function(_this, frame) {
+
     let size = frame.getBoundingInfo().boundingBox.extendSize;
     const wheels = _this.components.filter(s => s.includes('_wheel'));
     let frameName = _this.components.filter(s => s.includes('_frame'))[0];
@@ -40,7 +41,10 @@ Vehicule.prototype.loadWheels = function(_this, frame) {
     let toMerge = [frame]
 
     for (let i = 0; i < wheels.length; i++) {
-    
+
+        let simBtn = document.getElementById("simBtn")
+        simBtn.disabled = true
+
         BABYLON.SceneLoader.ImportMesh("", componentsMap[wheels[i]], `${wheels[i]}.obj`, _this.scene, function (newMeshes) {
             newMeshes.forEach(mesh => {
                     mesh.position = points[i]
@@ -66,6 +70,9 @@ Vehicule.prototype.loadWheels = function(_this, frame) {
                 _this.startPos = completeVehicule.position
                 completeVehicule.receiveShadows = true;
                 _this.shadowGenerator.getShadowMap().renderList.push(completeVehicule);
+                let simBtn = document.getElementById("simBtn")
+                simBtn.disabled = false
+                
             }
 
         });
@@ -81,19 +88,12 @@ Vehicule.prototype.toNextState = function() {
     }
 
     nextPosition = nextState.position
-    nextRotation = nextState.rotation
 
     let x = nextPosition[0]
     let y = nextPosition[1] + this.vehicule.position.y
     let z = nextPosition[2] + this.startPos.z
 
     this.vehicule.position = new BABYLON.Vector3(x, y, z)
-    
-    let yaw = nextRotation[0]
-    let pitch = nextRotation[1]
-    let roll = nextRotation[2]
-    
-    this.vehicule.rotation = new BABYLON.Vector3(yaw, pitch, roll)
 
     return true
 }

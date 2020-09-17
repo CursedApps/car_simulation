@@ -106,8 +106,8 @@ var setupScene = function () {
 
 var setupCamera = function () {
 
-        camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, 0, 20, new BABYLON.Vector3(0, 0, 0), scene);
-        camera.setPosition(new BABYLON.Vector3(0, 100, 0));
+        camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 20, new BABYLON.Vector3(0, 0, 0), scene);
+        camera.setPosition(new BABYLON.Vector3(-96, 65, -245));
 
         camera.lowerBetaLimit = 0.1;
         camera.upperBetaLimit = (Math.PI / 2) * 0.9;
@@ -188,28 +188,6 @@ var createRaceTrack = function () {
 
                 raceTrack = newMeshes
         });
-
-        y = getHeightAtPoint(x + 30, z)
-        BABYLON.SceneLoader.ImportMesh("", "assets/scenes/dirt/", "dirt.obj", scene, function (newMeshes) {
-                newMeshes.forEach(mesh => {
-                        mesh.position = new BABYLON.Vector3(x + 30, y, z)
-                        mesh.receiveShadows = true;
-                        shadowGenerator.getShadowMap().renderList.push(mesh);
-                });
-
-                dirtR = newMeshes
-        });
-
-        y = getHeightAtPoint(x - 30, z)
-        BABYLON.SceneLoader.ImportMesh("", "assets/scenes/dirt/", "dirt.obj", scene, function (newMeshes) {
-                newMeshes.forEach(mesh => {
-                        mesh.position = new BABYLON.Vector3(x - 30, y, z)
-                        mesh.receiveShadows = true;
-                        shadowGenerator.getShadowMap().renderList.push(mesh);
-                });
-
-                dirtL = newMeshes
-        });
 }
 
 var placeRaceTrack = function (length) {
@@ -221,16 +199,6 @@ var placeRaceTrack = function (length) {
 
         raceTrack.forEach(mesh => {
                 mesh.position = new BABYLON.Vector3(x, y, z)
-        });
-
-        y = getHeightAtPoint(x + 30, z)
-        dirtR.forEach(mesh => {
-                mesh.position = new BABYLON.Vector3(x + 30, y, z)
-        });
-
-        y = getHeightAtPoint(x - 30, z)
-        dirtL.forEach(mesh => {
-                mesh.position = new BABYLON.Vector3(x - 30, y, z)
         });
 }
 
@@ -261,6 +229,12 @@ var addUI = function () {
                 }
                 return false;
         }).bind(this);
+
+        input.addEventListener('click', function(event) {
+                event.target.files = null
+                event.target.value = null
+                filesToLoad = null
+        }, false);
 
         input.addEventListener('change', function (event) {
                 isSimulationRunning = false
@@ -332,7 +306,13 @@ var setupSimulation = function (data) {
                 return;
         }
 
+        cmpt = 0
         for (const vehicule of vehiculesData) {
+                cmpt++
+
+                let simBtn = document.getElementById("simBtn")
+                simBtn.disabled = true
+
                 let name = vehicule.name
                 if (name == null) {
                         console.log("Vehicule has no name :(")
@@ -351,6 +331,7 @@ var setupSimulation = function (data) {
                         continue;
                 }
 
+                isLastVehicule = cmpt == vehiculesData.length
                 vehicules.push(new Vehicule(name, components, movements, scene, shadowGenerator, -95))
         }
 
@@ -362,10 +343,4 @@ var cleanSimulation = function () {
                 vehicules[i].vehicule = null
         }
         vehicules = []
-}
-
-var runSimulation = function () {
-
-
-        //setTimeout(runSimulation, updateTime)
 }
