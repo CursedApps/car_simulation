@@ -58,6 +58,7 @@ window.onload = function () {
                         if (!isSimulationRunning) {
                                 let simBtn = document.getElementById("simBtn")
                                 simBtn.disabled = true
+                                // showWinnerBanner()
                         }
                 }
         });
@@ -258,7 +259,8 @@ var addUI = function () {
                 simBtn.style.zIndex = "2"
                 simBtn.disabled = true
                 document.body.appendChild(simBtn);
-                simBtn.style.right = `${20 + input.getBoundingClientRect().width - simBtn.getBoundingClientRect().width}px`
+                simBtn.style.right = `${5 + input.getBoundingClientRect().width - simBtn.getBoundingClientRect().width}px`
+                simBtn.style.top = `${simBtn.getBoundingClientRect().top + 20}px`
         }
 
         simBtn.addEventListener("click", function () {
@@ -343,4 +345,17 @@ var cleanSimulation = function () {
                 vehicules[i].vehicule = null
         }
         vehicules = []
+}
+
+
+var showWinnerBanner = function () {
+        console.log("SHOW WINNER BANNER")
+        let winnerBanner = document.getElementById("banner")
+        if (!winnerBanner) {
+                winnerBanner = document.createElement("p");
+                winnerBanner.id = "banner"
+                winnerBanner.className = "banner"
+                winnerBanner.textContent = "I AM A WINNER"
+                document.body.appendChild(winnerBanner);
+        }
 }

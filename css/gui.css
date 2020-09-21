@@ -4,10 +4,47 @@ button {
     font-size: 16px;
     border-radius: 8px;
     padding: 5px 12px;
-    border: 2px solid #ffd587;
+    border: 2px solid blue;
 }
 
 .disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+input {
+    background-color: rgba(173, 216, 230, 0.7);
+    border: 5px solid;
+    border-color: lightblue;
+    border-radius: 15px;
+
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 65px;
+}
+
+.banner {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background: url("../assets/textures/banner.png") no-repeat center center fixed;
+    background-size: cover;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; 
 }
