@@ -14,6 +14,9 @@ var vehicules = []
 var isSimulationRunning = false
 var updateTime = 10
 
+var winnerName = ""
+var winnerMessage = ""
+
 // Resize the babylon engine when the window is resized
 window.addEventListener("resize", function () {
         if (engine) {
@@ -58,7 +61,7 @@ window.onload = function () {
                         if (!isSimulationRunning) {
                                 let simBtn = document.getElementById("simBtn")
                                 simBtn.disabled = true
-                                // showWinnerBanner()
+                                showWinnerBanner()
                         }
                 }
         });
@@ -124,7 +127,7 @@ var setupCamera = function () {
 
 var createTerrain = function () {
 
-        BABYLON.SceneLoader.ImportMesh("", "assets/scenes/terrain_holes/", "terrain.obj", scene, function (newMeshes) {
+        BABYLON.SceneLoader.ImportMesh("", "assets/scenes/terrain_tunnels/", "terrain.obj", scene, function (newMeshes) {
                 ground = newMeshes[0]
                 ground.position = new BABYLON.Vector3(0, 0, 0);
                 ground.receiveShadows = true;
@@ -134,32 +137,6 @@ var createTerrain = function () {
 
                 let pg = new PineGenerator(scene, shadowGenerator, ground, -512, 512, 0, 500);
         });
-
-        BABYLON.SceneLoader.ImportMesh("", "assets/scenes/tunnel/", "tunnel.obj", scene, function (newMeshes) {
-                newMeshes.forEach(mesh => {
-                        let x = 0
-                        let z = -256
-                        let y = getHeightAtPoint(x, z)
-
-                        mesh.position = new BABYLON.Vector3(x, y, z - 40)
-                        mesh.receiveShadows = true;
-                        shadowGenerator.getShadowMap().renderList.push(mesh);
-                });
-
-        });
-
-        BABYLON.SceneLoader.ImportMesh("", "assets/scenes/tunnel/", "tunnel.obj", scene, function (newMeshes) {
-                newMeshes.forEach(mesh => {
-                        let x = 0
-                        let z = 385
-                        let y = getHeightAtPoint(x, z)
-
-                        mesh.position = new BABYLON.Vector3(x, y, z + 40)
-                        mesh.receiveShadows = true;
-                        shadowGenerator.getShadowMap().renderList.push(mesh);
-                });
-
-        })
 }
 
 var createSkyBox = function () {
@@ -294,12 +271,20 @@ var setupSimulation = function (data) {
                 return;
         }
 
-        if (trackLength > 200) {
-                console.log("Track length max value is 200 >:(")
+        if (trackLength > 230) {
+                console.log("Track length max value is 230 >:(")
                 return;
         }
 
         placeRaceTrack(trackLength);
+
+        winnerMessage = simulation.winning_msg;
+        winnerName = simulation.winner;
+
+        if (winnerMessage == null || winnerName == null) {
+                console.log("Missing information about the winner :(")
+                return;
+        }
 
         // Build vehicules
         let vehiculesData = simulation.vehicules
@@ -345,17 +330,30 @@ var cleanSimulation = function () {
                 vehicules[i].vehicule = null
         }
         vehicules = []
+
+        var element = document.getElementById("banner");
+        if (element){
+                element.parentNode.removeChild(element);
+        }
 }
 
 
 var showWinnerBanner = function () {
-        console.log("SHOW WINNER BANNER")
         let winnerBanner = document.getElementById("banner")
         if (!winnerBanner) {
                 winnerBanner = document.createElement("p");
-                winnerBanner.id = "banner"
-                winnerBanner.className = "banner"
-                winnerBanner.textContent = "I AM A WINNER"
+                winnerBanner.id = "banner";
+                winnerBanner.className = "banner";
+                winnerBanner.textContent = winnerName;
                 document.body.appendChild(winnerBanner);
+        }
+
+        let winnerText = document.getElementById("winner-text")
+        if (!winnerText) {
+                winnerText = document.createElement("p");
+                winnerText.id = "winnerText";
+                winnerText.className = "winnerText";
+                winnerText.textContent = winnerMessage;
+                document.body.appendChild(winnerText);
         }
 }
