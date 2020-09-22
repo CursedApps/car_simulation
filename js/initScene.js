@@ -332,7 +332,12 @@ var cleanSimulation = function () {
         vehicules = []
 
         var element = document.getElementById("banner");
-        if (element){
+        if (element) {
+                element.parentNode.removeChild(element);
+        }
+
+        var element = document.getElementById("winner-text");
+        if (element) {
                 element.parentNode.removeChild(element);
         }
 }
@@ -351,7 +356,7 @@ var showWinnerBanner = function () {
         let winnerText = document.getElementById("winner-text")
         if (!winnerText) {
                 winnerText = document.createElement("p");
-                winnerText.id = "winnerText";
+                winnerText.id = "winner-text";
                 winnerText.className = "winnerText";
                 winnerText.textContent = winnerMessage;
                 document.body.appendChild(winnerText);
